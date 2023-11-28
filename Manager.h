@@ -15,7 +15,7 @@ public:
 
 	void run(const char * command_txt);
 	
-	bool LOAD(const char* filename);	
+	bool LOAD(string filename);	
 	bool PRINT();	
 	bool mBFS(char option, int vertex);	
 	bool mDFS(char option, int vertex);	

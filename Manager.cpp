@@ -2,6 +2,7 @@
 #include "GraphMethod.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <string>
 
@@ -28,19 +29,125 @@ void Manager::run(const char* command_txt){
 		fout<<"command file open error"<<endl;
 		return;	//Return
 	}
+
+	while (!fin.eof()) {
+
+		string cmd, line;
+		getline(fin, line);
+		if (!line.empty() && line.back() == '\r') // if you encounter '/r', ignore it
+			line.pop_back();
+
+		vector<string> tokens;
+		char* token = strtok(&line[0], " "); 
+
+		while (token != NULL) { // read in units of '\t' separation
+			tokens.push_back(token);
+			token = strtok(NULL, " ");
+		}
+		cmd = tokens[0];
+		
+		if (cmd == "LOAD") {
+
+			string filename;
+			if(tokens.size() == 2) {
+				filename = tokens[1];
+
+				if(!LOAD(filename))
+					printErrorCode(100);
+			}
+			else
+				printErrorCode(100);
+		}
+
+		else if (cmd == "PRINT") {
+			if(tokens.size() != 1 || !PRINT())
+				printErrorCode(200);
+		}
+		else {
+			printErrorCode(1000);
+			break;
+		}
+	}
 	
 	fin.close();
 	return;
 }
 
-bool Manager::LOAD(const char* filename)
+bool Manager::LOAD(string filename)
 {
-	
+	ifstream fgraph;
+	fgraph.open(filename);
+	if(!fgraph)
+		return false;
+
+	if(graph != nullptr) {
+		delete graph;
+		graph = nullptr;
+	}
+
+	int from, to, weight, size;
+	char type, *token;
+	string line;
+
+	fgraph >> type >> size;
+	getline(fgraph, line);
+
+	if (type == 'L') {
+
+		graph = new ListGraph(type, size);
+		while (!fgraph.eof()) {
+			
+			vector<string> tokens;
+			getline(fgraph, line);
+			token = strtok(&line[0], " "); 
+
+			while (token != NULL) {
+				tokens.push_back(token);
+				token = strtok(NULL, " ");
+			}
+
+			if (tokens.size() == 1) {
+				from = stoi(tokens[0]);
+			}
+			else if (tokens.size() == 2) {
+				to = stoi(tokens[0]);
+				weight = stoi(tokens[1]);
+				graph->insertEdge(from, to, weight);
+			}
+			else 
+				return false;
+		}
+	}
+	else if (type == 'M') {
+
+		graph = new MatrixGraph(type, size);
+		from = 0;
+		while (!fgraph.eof()) {
+
+			for(to = 1; to <= size; to++) {
+				int num;
+				fgraph >> num;
+				if(num != 0)
+					graph->insertEdge(from + 1, to, num);
+			}
+			from++;
+		}
+	}
+	else 
+		return false;
+
+	fout << "========LOAD========" << endl;
+	fout << "Success" << endl;
+	fout << "====================" << endl << endl;
+	return true;
 }
 
 bool Manager::PRINT()	
 {
-
+	if(graph == nullptr) 
+		return false;
+	
+	graph->printGraph(&fout);
 }
 
 bool Manager::mBFS(char option, int vertex)	

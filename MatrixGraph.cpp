@@ -14,17 +14,31 @@ MatrixGraph::MatrixGraph(bool type, int size) : Graph(type, size)
 
 MatrixGraph::~MatrixGraph()
 {
-
+	for(int i = 0; i < getSize(); i++) 
+		delete[] m_Mat[i]; 
+	delete[] m_Mat;
 }
 
 void MatrixGraph::getAdjacentEdges(int vertex, map<int, int>* m)
 {	
+	for(int i = 1; i <= getSize(); i++) {
 
+		for(int j = 1; j <= getSize(); j++) {
+			if(m_Mat[vertex][j] != 0)
+				m->insert(pair<int, int>(j, m_Mat[vertex][j]));
+
+			if(j == vertex && m_Mat[i][j] != 0)
+				m->insert(pair<int, int>(i, m_Mat[i][j]));
+		}
+	}
 }
 
 void MatrixGraph::getAdjacentEdgesDirect(int vertex, map<int, int>* m)
 {
-	
+	for(int i = 1; i <= getSize(); i++) {
+		if(m_Mat[vertex][i] != 0)
+			m->insert(pair<int, int>(i, m_Mat[vertex][i]));
+	}
 }
 
 void MatrixGraph::insertEdge(int from, int to, int weight)	

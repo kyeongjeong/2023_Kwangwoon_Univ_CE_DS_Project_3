@@ -1,4 +1,16 @@
-LOAD graph_L.txt
-PRINT
 LOAD graph_M.txt
-PRINT
+DFS Y 1
+DFS Y 2
+DFS Y 3
+DFS Y 4
+DFS Y 5
+DFS Y 6
+DFS Y 7
+LOAD graph_L.txt
+DFS Y 1
+DFS Y 2
+DFS Y 3
+DFS Y 4
+DFS Y 5
+DFS Y 6
+DFS Y 7

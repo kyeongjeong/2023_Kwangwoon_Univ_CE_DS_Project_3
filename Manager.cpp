@@ -63,6 +63,36 @@ void Manager::run(const char* command_txt){
 			if(tokens.size() != 1 || !PRINT())
 				printErrorCode(200);
 		}
+
+		else if (cmd == "BFS") {
+
+			char option;
+			int vertex;
+			if(tokens.size() == 3) {
+
+				option = tokens[1][0];
+				vertex = stoi(tokens[2]);
+				if(!mBFS(option, vertex))
+					printErrorCode(300);
+			}
+			else
+				printErrorCode(300);
+		}
+
+		else if (cmd == "DFS") {
+
+			char option;
+			int vertex;
+			if(tokens.size() == 3) {
+
+				option = tokens[1][0];
+				vertex = stoi(tokens[2]);
+				if(!mDFS(option, vertex))
+					printErrorCode(400);
+			}
+			else
+				printErrorCode(400);
+		}
 		else {
 			printErrorCode(1000);
 			break;
@@ -148,16 +178,45 @@ bool Manager::PRINT()
 		return false;
 	
 	graph->printGraph(&fout);
+	return true;
 }
 
 bool Manager::mBFS(char option, int vertex)	
 {
+	if((graph == nullptr) || (vertex < 1)) 
+		return false;
+    if(option != 'Y' && option != 'N')
+        return false;
 	
+	fout << "========BFS========" << endl;
+	if (option == 'Y') 
+		fout << "Directed Graph BFS result" << endl;
+	else
+		fout << "Unirected Graph BFS result" << endl;
+	fout << "startvertex: " << vertex << endl;
+	
+	BFS(graph, option, vertex);
+	fout << "===================" << endl << endl;
+	return true;
 }
 
 bool Manager::mDFS(char option, int vertex)	
 {
+	if((graph == nullptr) || (vertex < 1)) 
+		return false;
+    if(option != 'Y' && option != 'N')
+        return false;
 	
+	fout << "========DFS========" << endl;
+	if (option == 'Y') 
+		fout << "Directed Graph DFS result" << endl;
+	else
+		fout << "Unirected Graph DFS result" << endl;
+	fout << "startvertex: " << vertex << endl;
+	
+	DFS(graph, option, vertex);
+	fout << "===================" << endl << endl;
+	return true;
 }
 
 bool Manager::mDIJKSTRA(char option, int vertex)	

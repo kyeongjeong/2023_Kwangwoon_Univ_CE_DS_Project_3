@@ -146,7 +146,6 @@ void Manager::run(const char* command_txt){
 			break;
 		}
 	}
-	
 	fin.close();
 	return;
 }
@@ -297,5 +296,3 @@ void Manager::printErrorCode(int n)
 	fout<<n<<endl;
 	fout<<"===================="<<endl << endl;
 }
-
-

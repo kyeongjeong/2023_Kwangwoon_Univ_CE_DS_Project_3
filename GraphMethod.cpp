@@ -58,6 +58,7 @@ bool BFS(Graph* graph, char option, int vertex)
     }
     fout << endl;
     fout << "=====================" << endl << endl;
+    fout.close();
     return true;
 }
 
@@ -111,6 +112,7 @@ bool DFS(Graph* graph, char option, int vertex)
     }
     fout << endl;
     fout << "=====================" << endl << endl;
+    fout.close();
     return true;
 }
 
@@ -177,6 +179,7 @@ bool Kruskal(Graph* graph)
     }
     fout << "cost: " << cost << endl;
     fout << "=====================" << endl << endl;
+    fout.close();
     return true;
 }
 
@@ -263,6 +266,7 @@ bool Dijkstra(Graph* graph, char option, int vertex)
         }
     }
     fout << "=====================" << endl << endl;
+    fout.close();
     return true;
 }
 
@@ -274,6 +278,75 @@ bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex)
         return false;
 
     int size = graph->getSize();
+    vector<int> dist(size + 1, INT_MAX);
+    vector<int> path(size + 1, -1);
+    dist[s_vertex] = 0;
+
+    for (int i = 1; i <= size - 1; ++i) {
+
+        map<int, int>* m = new map<int, int>;
+        if(option == 'Y')
+            graph->getAdjacentEdgesDirect(i, m);
+        else 
+            graph->getAdjacentEdges(i, m);
+        
+        for(auto it = m->begin(); it!=m->end(); it++) {
+
+            int from = i;
+            int to = it->first;
+            int weight = it->second;
+
+            if ((dist[from] != INT_MAX) && (dist[to] > dist[from] + weight)) {
+                dist[to] = dist[from] + weight;
+                path[to] = from;
+            }
+        }
+    }
+    for (int i = 1; i <= size - 1; ++i) {
+
+        map<int, int>* m = new map<int, int>;
+        if(option == 'Y')
+            graph->getAdjacentEdgesDirect(i, m);
+        else 
+            graph->getAdjacentEdges(i, m);
+        
+        for(auto it = m->begin(); it!=m->end(); it++) {
+
+            int from = i;
+            int to = it->first;
+            int weight = it->second;
+
+            if (dist[from] != INT_MAX && dist[to] > dist[from] + weight)
+                return false;
+        }
+    }
+    fout << "====== Bellman-Ford ======" << endl;
+    if (option == 'Y')
+        fout << "Directed Graph Bellman-Ford result" << endl;
+    else
+        fout << "Unirected Graph Bellman-Ford result" << endl;
+
+    if (dist[e_vertex] == INT_MAX) 
+        fout << "x" << endl;
+    else {
+
+        stack<int> printPath;
+        int curNode = e_vertex;
+        while (curNode != -1) {
+            printPath.push(curNode);
+            curNode = path[curNode];
+        }
+        while (!printPath.empty()) {
+            fout << printPath.top();
+            printPath.pop();
+            if (!printPath.empty())
+                fout << " -> ";
+        }
+        fout << endl << "cost: " << dist[e_vertex] << endl;
+    }
+    fout << "=====================" << endl << endl;
+    fout.close();
+    return true;     
 }
 
 bool FLOYD(Graph* graph, char option)
@@ -341,6 +414,7 @@ bool FLOYD(Graph* graph, char option)
 		fout << endl;
 	}
 	fout << "=======================" << endl << endl;
+    fout.close();
     return true;
 }
 

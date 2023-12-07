@@ -2,91 +2,24 @@
 Success
 ====================
 
-========DFS========
-Directed Graph DFS result
-startvertex: 1
- -> 2 -> 4 -> 7 -> 5 -> 3 -> 6
-===================
+========PRINT========
+[1] -> (2,6) -> (3,2)
+[2] -> (4,5)
+[3] -> (2,7) -> (5,3) -> (6,8)
+[4] -> (7,3)
+[5] -> (4,4)
+[6] -> (7,1)
+[7] -> (5,10)
+=====================
 
-========DFS========
-Directed Graph DFS result
-startvertex: 2
- -> 4 -> 7 -> 5
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 3
- -> 2 -> 4 -> 7 -> 5 -> 6
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 4
- -> 7 -> 5
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 5
- -> 4 -> 7
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 6
- -> 7 -> 5 -> 4
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 7
- -> 5 -> 4
-===================
-
-========LOAD========
-Success
-====================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 1
- -> 2 -> 4 -> 7 -> 5 -> 3 -> 6
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 2
- -> 4 -> 7 -> 5
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 3
- -> 2 -> 4 -> 7 -> 5 -> 6
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 4
- -> 7 -> 5
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 5
- -> 4 -> 7
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 6
- -> 7 -> 5 -> 4
-===================
-
-========DFS========
-Directed Graph DFS result
-startvertex: 7
- -> 5 -> 4
+======Kruskal======
+[1]	3(2) 
+[2]	4(5) 
+[3]	1(2) 5(3) 
+[4]	2(5) 5(4) 7(3) 
+[5]	3(3) 4(4) 
+[6]	7(1) 
+[7]	4(3) 6(1) 
+cost: 18
 ===================
 

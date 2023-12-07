@@ -93,6 +93,26 @@ void Manager::run(const char* command_txt){
 			else
 				printErrorCode(400);
 		}
+
+		else if (cmd == "KRUSKAL") {
+			if(tokens.size() != 1 || !mKRUSKAL())
+				printErrorCode(600);
+		}
+
+		else if (cmd == "DIJKSTRA") {
+			char option;
+			int vertex;
+			if(tokens.size() == 3) {
+
+				option = tokens[1][0];
+				vertex = stoi(tokens[2]);
+				if(!mDIJKSTRA(option, vertex))
+					printErrorCode(700);
+			}
+			else
+				printErrorCode(700);
+		}
+
 		else {
 			printErrorCode(1000);
 			break;
@@ -183,50 +203,40 @@ bool Manager::PRINT()
 
 bool Manager::mBFS(char option, int vertex)	
 {
-	if((graph == nullptr) || (vertex < 1)) 
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
 		return false;
     if(option != 'Y' && option != 'N')
         return false;
-	
-	fout << "========BFS========" << endl;
-	if (option == 'Y') 
-		fout << "Directed Graph BFS result" << endl;
-	else
-		fout << "Unirected Graph BFS result" << endl;
-	fout << "startvertex: " << vertex << endl;
-	
-	BFS(graph, option, vertex);
-	fout << "===================" << endl << endl;
-	return true;
+
+	return BFS(graph, option, vertex);
 }
 
 bool Manager::mDFS(char option, int vertex)	
 {
-	if((graph == nullptr) || (vertex < 1)) 
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
 		return false;
     if(option != 'Y' && option != 'N')
         return false;
-	
-	fout << "========DFS========" << endl;
-	if (option == 'Y') 
-		fout << "Directed Graph DFS result" << endl;
-	else
-		fout << "Unirected Graph DFS result" << endl;
-	fout << "startvertex: " << vertex << endl;
-	
-	DFS(graph, option, vertex);
-	fout << "===================" << endl << endl;
-	return true;
+
+	return DFS(graph, option, vertex);
 }
 
 bool Manager::mDIJKSTRA(char option, int vertex)	
 {
-	
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
+		return false;
+    if(option != 'Y' && option != 'N')
+        return false;
+
+	return Dijkstra(graph, option, vertex);
 }
 
 bool Manager::mKRUSKAL()
 {
- 	
+ 	if((graph == nullptr) || !Kruskal(graph)) 
+		return false;
+	
+	return true;
 }
 
 bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex) 

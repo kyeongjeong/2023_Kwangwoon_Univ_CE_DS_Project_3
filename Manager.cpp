@@ -113,6 +113,34 @@ void Manager::run(const char* command_txt){
 				printErrorCode(700);
 		}
 
+		else if(cmd == "BELLMANFORD") {
+
+			char option;
+			int s_vertex, e_vertex;
+			if(tokens.size() == 4) {
+				
+				option = tokens[1][0];
+				s_vertex = stoi(tokens[2]);
+				e_vertex = stoi(tokens[3]);
+				if(!mBELLMANFORD(option, s_vertex, e_vertex))
+					printErrorCode(800);
+			}
+			else
+				printErrorCode(800);
+		}
+
+		else if (cmd == "FLOYD") {
+			char option;
+			if(tokens.size() == 2) {
+
+				option = tokens[1][0];
+				if(!mFLOYD(option))
+					printErrorCode(900);
+			}
+			else
+				printErrorCode(900);
+		}
+
 		else {
 			printErrorCode(1000);
 			break;
@@ -233,20 +261,30 @@ bool Manager::mDIJKSTRA(char option, int vertex)
 
 bool Manager::mKRUSKAL()
 {
- 	if((graph == nullptr) || !Kruskal(graph)) 
+ 	if(graph == nullptr) 
 		return false;
 	
-	return true;
+	return Kruskal(graph);
 }
 
 bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex) 
 {
-	
+	if((graph == nullptr) || (s_vertex < 1) || (s_vertex > graph->getSize()) || (e_vertex < 1) || (e_vertex > graph->getSize()))
+		return false;
+	if(option != 'Y' && option != 'N')
+        return false;
+
+	return Bellmanford(graph, option, s_vertex, e_vertex);
 }
 
 bool Manager::mFLOYD(char option)
 {
-	
+	if(graph == nullptr)
+		return false;
+	if(option != 'Y' && option != 'N')
+        return false;
+
+	FLOYD(graph, option);
 }
 
 bool Manager::mKwoonWoon(int vertex) {

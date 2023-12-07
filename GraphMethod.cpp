@@ -22,7 +22,7 @@ bool BFS(Graph* graph, char option, int vertex)
     int size = graph->getSize(); 
     bool isVisit[size + 1] = {0, }; 
 
-    fout << "========BFS========" << endl;
+    fout << "======== BFS ========" << endl;
 	if (option == 'Y') 
 		fout << "Directed Graph BFS result" << endl;
 	else
@@ -57,7 +57,7 @@ bool BFS(Graph* graph, char option, int vertex)
         }
     }
     fout << endl;
-    fout << "===================" << endl << endl;
+    fout << "=====================" << endl << endl;
     return true;
 }
 
@@ -68,7 +68,7 @@ bool DFS(Graph* graph, char option, int vertex)
     if(!fout)
         return false;
     
-    fout << "========DFS========" << endl;
+    fout << "======== DFS ========" << endl;
 	if (option == 'Y') 
 		fout << "Directed Graph DFS result" << endl;
 	else
@@ -110,7 +110,7 @@ bool DFS(Graph* graph, char option, int vertex)
         }
     }
     fout << endl;
-    fout << "===================" << endl << endl;
+    fout << "=====================" << endl << endl;
     return true;
 }
 
@@ -166,7 +166,7 @@ bool Kruskal(Graph* graph)
     }
     
     quicksort(printEdge, 0, printEdge.size() - 1, 6);
-    fout << "======Kruskal======" << endl;
+    fout << "====== Kruskal ======" << endl;
     for(int i = 1; i <= size; i++) {
         fout << "[" << i << "]\t";
         for(auto it2 = printEdge.begin(); it2 != printEdge.end(); it2++) {
@@ -176,7 +176,7 @@ bool Kruskal(Graph* graph)
         fout << endl;
     }
     fout << "cost: " << cost << endl;
-    fout << "===================" << endl << endl;
+    fout << "=====================" << endl << endl;
     return true;
 }
 
@@ -188,9 +188,9 @@ bool Dijkstra(Graph* graph, char option, int vertex)
         return false;
 
     int size = graph->getSize();
-    int start = vertex;
-    vector<int> distance(size, INT_MAX);
-    vector<bool> visited(size, false);
+    vector<int> distance(size + 1, INT_MAX);
+    vector<bool> visited(size + 1, false);
+    vector<int> path(size + 1, -1);
 
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> dij;
     distance[vertex] = 0;
@@ -198,7 +198,7 @@ bool Dijkstra(Graph* graph, char option, int vertex)
 
     while(!dij.empty()) {
 
-        int dist = -dij.top().first;
+        int dist = dij.top().first;
         int curVertex = dij.top().second;
         dij.pop();
 
@@ -207,49 +207,141 @@ bool Dijkstra(Graph* graph, char option, int vertex)
 
         map<int, int>* m = new map<int, int>;
         if(option == 'Y')
-            graph->getAdjacentEdgesDirect(vertex, m);
+            graph->getAdjacentEdgesDirect(curVertex, m);
         else 
-            graph->getAdjacentEdges(vertex, m);
-        map<int, int>::iterator it = m->begin();
+            graph->getAdjacentEdges(curVertex, m);
 
         for (auto it = m->begin(); it != m->end(); ++it) {
-            int nextVertex = edge.first;
-            int edgeWeight = edge.second;
+            
+            int nextVertex = it->first;
+            int edgeWeight = it->second;
 
-            // relaxation (간선의 가중치 업데이트)
-            if (distance[curVertex] != INT_MAX && distance[nextVertex] > distance[curVertex] + edgeWeight) {
+            if(edgeWeight < 0)
+                return false;
+
+            if ((distance[curVertex] != INT_MAX) && (distance[nextVertex] > distance[curVertex]+edgeWeight)) {
                 distance[nextVertex] = distance[curVertex] + edgeWeight;
-                dij.push({-distance[nextVertex], nextVertex});
+                dij.push({distance[nextVertex], nextVertex});
+                path[nextVertex] = curVertex;
             }
         }
-
         visited[curVertex] = true;
     }
 
-    for(int i = 0; i < size; i++) {
+    fout << "====== Dijkstra ======" << endl;
+    if (option == 'Y') 
+		fout << "Directed Graph Dijkstra result" << endl;
+	else
+		fout << "Unirected Graph Dijkstra result" << endl;
+	fout << "startvertex: " << vertex << endl;
+    for(int i = 1; i <= size; i++) {
         
-        if(i != start) {
-            
+        if(i != vertex) {
+
+            stack<int> printPath;       
             fout << "[" << i << "] ";
-            if(shortest[i] == 999)
-               fout << "x";
-            else
-                fout << shortest[i];
+            if(distance[i] == INT_MAX) {
+               fout << "x" << endl;
+               continue;
+            }
+            else {
+
+                int curNode = i;
+                while (curNode != -1) {
+                    printPath.push(curNode);
+                    curNode = path[curNode];
+                }
+
+                while (!printPath.empty()) {
+                    fout << printPath.top();
+                    printPath.pop();
+                    if (!printPath.empty())
+                        fout << " -> ";
+                }
+                fout << " (" << distance[i] << ")" << endl;                
+            }
         }
-        if(i != size-1 && i != start)
-            fout << endl;
     }
+    fout << "=====================" << endl << endl;
     return true;
 }
 
 bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex) 
 {
-   
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    if(!fout)
+        return false;
+
+    int size = graph->getSize();
 }
 
 bool FLOYD(Graph* graph, char option)
 {
-   
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    if(!fout)
+        return false;
+
+    int size = graph->getSize();
+    int dist[size+1][size+1];
+    for (int i = 0; i <= size; ++i) {
+        for (int j = 0; j <= size; ++j)
+            dist[i][j] = INT_MAX; 
+    }
+
+    for(int i = 1; i <= size; i++) {
+
+        map<int, int>* m = new map<int, int>;
+        if(option == 'Y')
+            graph->getAdjacentEdgesDirect(i, m);
+        else 
+            graph->getAdjacentEdges(i, m);
+        
+        for(auto it = m->begin(); it!=m->end(); it++)
+            dist[i][it->first] = it->second;
+    }
+
+    for (int k = 1; k <= size; k++) {
+        for (int i = 1; i <= size; i++) {
+            for (int j = 1; j <= size; j++) {
+                if ((dist[i][k] != INT_MAX) && (dist[k][j] != INT_MAX) && (dist[i][j] > dist[i][k] + dist[k][j])) 
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    for(int i = 1; i <= size; i++) {
+        if(dist[i][i] < 0) 
+            return false; 
+        else
+            dist[i][i] = 0;
+    }
+    
+    fout << "======== FLOYD ========" << endl;
+    if (option == 'Y') 
+		fout << "Directed Graph FLOYD result" << endl;
+	else
+		fout << "Unirected Graph FLOYD result" << endl;
+    fout << '\t';
+
+	for(int i = 1; i <= size; i++)
+		fout << "[" << i << "]" << '\t';
+	fout << endl;
+
+	for(int i = 1; i <= size; i++) {
+
+		fout << "[" << i << "] ";
+		for(int j = 1; j <= size && fout << '\t'; j++) {
+            if(dist[i][j] == INT_MAX)
+                fout << "x";
+			else
+                fout << dist[i][j];
+        }
+		fout << endl;
+	}
+	fout << "=======================" << endl << endl;
+    return true;
 }
 
 bool KWANGWOON(Graph* graph, int vertex) {

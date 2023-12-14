@@ -1,4 +1,3 @@
-LOAD graph_L.txt
+LOAD graph_M.txt
 PRINT
-BELLMANFORD Y 1 6
-BELLMANFORD Y 1 7
+FLOYD Y

@@ -77,7 +77,7 @@ bool DFS(Graph* graph, char option, int vertex)
 	fout << "startvertex: " << vertex << endl;
    
     int size = graph->getSize();
-    bool isVisit[size] = {0, };
+    bool isVisit[size + 1] = {0, };
     int start = vertex;
     fout << start;
 
@@ -161,7 +161,7 @@ bool Kruskal(Graph* graph)
     if(mst.size() < size - 1) 
         return false;
     
-    vector< pair<int, pair<int, int> > > printEdge;
+    vector< pair<int, pair<int, int>>> printEdge;
     for(auto it2 = mst.begin(); it2 != mst.end(); it2++) {
         printEdge.push_back(make_pair(it2->second.second, make_pair(it2->second.first, it2->first)));
         printEdge.push_back(make_pair(it2->second.first, make_pair(it2->second.second, it2->first)));
@@ -302,24 +302,24 @@ bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex)
             }
         }
     }
-    for (int i = 1; i <= size - 1; ++i) {
+    // for (int i = 1; i <= size - 1; ++i) {
 
-        map<int, int>* m = new map<int, int>;
-        if(option == 'Y')
-            graph->getAdjacentEdgesDirect(i, m);
-        else 
-            graph->getAdjacentEdges(i, m);
+    //     map<int, int>* m = new map<int, int>;
+    //     if(option == 'Y')
+    //         graph->getAdjacentEdgesDirect(i, m);
+    //     else 
+    //         graph->getAdjacentEdges(i, m);
         
-        for(auto it = m->begin(); it!=m->end(); it++) {
+    //     for(auto it = m->begin(); it!=m->end(); it++) {
 
-            int from = i;
-            int to = it->first;
-            int weight = it->second;
+    //         int from = i;
+    //         int to = it->first;
+    //         int weight = it->second;
 
-            if (dist[from] != INT_MAX && dist[to] > dist[from] + weight)
-                return false;
-        }
-    }
+    //         if (dist[from] != INT_MAX && dist[to] > dist[from] + weight)
+    //             return false;
+    //     }
+    // }
     fout << "====== Bellman-Ford ======" << endl;
     if (option == 'Y')
         fout << "Directed Graph Bellman-Ford result" << endl;
@@ -420,6 +420,63 @@ bool FLOYD(Graph* graph, char option)
 
 bool KWANGWOON(Graph* graph, int vertex) {
 
+    ofstream fout;
+    fout.open("log.txt", ios::app);
+    if(!fout)
+        return false;
+
+    int size = graph->getSize();
+    bool isVisit[size + 1] = {0, };
+
+    fout << "======== KWANGWOON ========" << endl;
+    fout << "startvertex: " << vertex << endl;
+    fout << vertex;
+    
+    int num = vertex;
+    isVisit[vertex] = 1;
+    while(true) 
+    {
+        if(num != vertex)
+            fout <<  " -> " << num;
+
+        map<int, int>* m = new map<int, int>;
+        graph->getAdjacentEdges(num, m);
+
+        if(m->size() % 2 == 0) {
+            for(auto it = m->begin(); it != m->end(); it++)  {
+                int newNum = it->first;
+                if(isVisit[newNum] == false) {
+                    num = newNum;
+                    isVisit[newNum] = true;
+                    break;
+                }
+            }
+        }
+        else {
+            for (auto it = m->rbegin(); it != m->rend(); ++it) {
+                int newNum = it->first;
+                if(isVisit[newNum] == false) {
+                    num = newNum;
+                    isVisit[newNum] = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    vector<int> arr(size, 1);
+	vector<int> segment_tree;
+	segment_tree.resize(arr.size() * 4);
+	init(1, 0, arr.size() - 1, arr, segment_tree);  
+
+	int diff = arr[1];
+    arr[1] = 0;
+    update(1, 0, arr.size() - 1, 1, diff, arr, segment_tree);
+
+	fout << endl;
+    fout << "===========================" << endl << endl;
+    fout.close();
+    return true;
 }
 
 void quicksort(vector<pair<int, pair<int, int>>>& arr, int low, int high, int segment_size) {
@@ -490,4 +547,36 @@ void Union(vector<int>& parent, vector<int>& rank, int x, int y) {
         parent[yRoot] = xRoot;
         rank[xRoot]++;
     }
+}
+
+int init(int node, int start, int end, vector<int> &_arr, vector<int> &_seg) {
+
+	cout << "***" << endl;
+    if (start == end) return _seg[node] = _arr[start];
+	int mid = (start + end) / 2;
+	init(node * 2, start, mid, _arr, _seg);
+	init(node * 2 + 1, mid + 1, end, _arr, _seg);
+	_seg[node] = _seg[node * 2] + _seg[node * 2 + 1];
+}
+
+void update(int node, int start, int end, int target, int diff_value, vector<int>& _arr, vector<int>& _seg) {
+    
+    if (target < start || target > end) return;
+    if (start == end) {
+        _arr[target] = 0;
+        _seg[node] = 0;
+        return;
+    }
+    int mid = (start + end) / 2;
+    update(node * 2, start, mid, target, diff_value, _arr, _seg);
+    update(node * 2 + 1, mid + 1, end, target, diff_value, _arr, _seg);
+    _seg[node] = _seg[node * 2] + _seg[node * 2 + 1];
+}
+
+int sum(int node, int start, int end, int left, int right, vector<int>& _arr, vector<int>& _seg) {
+	
+    if (left > end || right < start) return 0;
+	if (left <= start && end <= right) return _seg[node];
+	int mid = (start + end) / 2;
+	return sum(node * 2, start, mid, left, right, _arr, _seg) + sum(node * 2 + 1, mid + 1, end, left, right, _arr, _seg);
 }

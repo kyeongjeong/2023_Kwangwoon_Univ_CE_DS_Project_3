@@ -17,5 +17,8 @@ int partition(vector<pair<int, pair<int, int>>>& arr, int low, int high);
 void insertionSort(vector<pair<int, pair<int, int>>>& arr, int low, int high);
 int findRoot(vector<int>& parent, int i);
 void Union(vector<int>& parent, vector<int>& rank, int x, int y);
+int init(int node, int start, int end, vector<int> &_arr, vector<int> &_seg);
+void update(int node, int start, int end, int target, int diff_value, vector<int>& _arr, vector<int>& _seg);
+int sum(int node, int start, int end, int left, int right, vector<int>& _arr, vector<int>& _seg);
 
 #endif

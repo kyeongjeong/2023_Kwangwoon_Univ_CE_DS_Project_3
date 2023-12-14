@@ -46,7 +46,7 @@ void Manager::run(const char* command_txt){
 		}
 		cmd = tokens[0];
 		
-		if (cmd == "LOAD") {
+		if (cmd == "LOAD") { // if command is LOAD
 
 			string filename;
 			if(tokens.size() == 2) {
@@ -59,12 +59,12 @@ void Manager::run(const char* command_txt){
 				printErrorCode(100);
 		}
 
-		else if (cmd == "PRINT") {
+		else if (cmd == "PRINT") { // if command is PRINT
 			if(tokens.size() != 1 || !PRINT())
 				printErrorCode(200);
 		}
 
-		else if (cmd == "BFS") {
+		else if (cmd == "BFS") { // if command is BFS
 
 			char option;
 			int vertex;
@@ -79,7 +79,7 @@ void Manager::run(const char* command_txt){
 				printErrorCode(300);
 		}
 
-		else if (cmd == "DFS") {
+		else if (cmd == "DFS") { // if command is DFS
 
 			char option;
 			int vertex;
@@ -94,12 +94,17 @@ void Manager::run(const char* command_txt){
 				printErrorCode(400);
 		}
 
-		else if (cmd == "KRUSKAL") {
+		else if(cmd == "KWANGWOON") { // if command is KWANGWOON
+			if(tokens.size() != 1 || !mKwoonWoon(1))
+				printErrorCode(500);
+		}
+
+		else if (cmd == "KRUSKAL") { // if command is KRUSKAL
 			if(tokens.size() != 1 || !mKRUSKAL())
 				printErrorCode(600);
 		}
 
-		else if (cmd == "DIJKSTRA") {
+		else if (cmd == "DIJKSTRA") { // if command is DIJKSTRA
 			char option;
 			int vertex;
 			if(tokens.size() == 3) {
@@ -113,7 +118,7 @@ void Manager::run(const char* command_txt){
 				printErrorCode(700);
 		}
 
-		else if(cmd == "BELLMANFORD") {
+		else if(cmd == "BELLMANFORD") { // if command is BELLMANFORD
 
 			char option;
 			int s_vertex, e_vertex;
@@ -129,7 +134,7 @@ void Manager::run(const char* command_txt){
 				printErrorCode(800);
 		}
 
-		else if (cmd == "FLOYD") {
+		else if (cmd == "FLOYD") { // if command is FLOYD
 			char option;
 			if(tokens.size() == 2) {
 
@@ -141,10 +146,15 @@ void Manager::run(const char* command_txt){
 				printErrorCode(900);
 		}
 
-		else {
-			printErrorCode(1000);
+		else if (cmd == "EXIT") { // if command is EXIT	
+			fout << "========EXIT========" << endl;
+			fout << "Success" << endl;
+			fout << "====================" << endl << endl;
 			break;
 		}
+
+		else 
+			printErrorCode(1000);
 	}
 	fin.close();
 	return;
@@ -221,7 +231,7 @@ bool Manager::LOAD(string filename)
 
 bool Manager::PRINT()	
 {
-	if(graph == nullptr) 
+	if(graph == nullptr) // Check if the graph is null
 		return false;
 	
 	graph->printGraph(&fout);
@@ -230,9 +240,9 @@ bool Manager::PRINT()
 
 bool Manager::mBFS(char option, int vertex)	
 {
-	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) // Check if the graph is null or the vertex is out of bounds
 		return false;
-    if(option != 'Y' && option != 'N')
+    if(option != 'Y' && option != 'N') // Check if the option is valid
         return false;
 
 	return BFS(graph, option, vertex);
@@ -240,9 +250,9 @@ bool Manager::mBFS(char option, int vertex)
 
 bool Manager::mDFS(char option, int vertex)	
 {
-	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) // Check if the graph is null or the vertex is out of bounds
 		return false;
-    if(option != 'Y' && option != 'N')
+    if(option != 'Y' && option != 'N') // Check if the option is valid
         return false;
 
 	return DFS(graph, option, vertex);
@@ -250,9 +260,9 @@ bool Manager::mDFS(char option, int vertex)
 
 bool Manager::mDIJKSTRA(char option, int vertex)	
 {
-	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) 
+	if((graph == nullptr) || (vertex < 1) || (vertex > graph->getSize())) // Check if the graph is null or the vertex is out of bounds
 		return false;
-    if(option != 'Y' && option != 'N')
+    if(option != 'Y' && option != 'N') // Check if the option is valid
         return false;
 
 	return Dijkstra(graph, option, vertex);
@@ -260,7 +270,7 @@ bool Manager::mDIJKSTRA(char option, int vertex)
 
 bool Manager::mKRUSKAL()
 {
- 	if(graph == nullptr) 
+ 	if(graph == nullptr) // Check if the graph is null
 		return false;
 	
 	return Kruskal(graph);
@@ -268,9 +278,10 @@ bool Manager::mKRUSKAL()
 
 bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex) 
 {
+	// Check if the graph is null or the vertex is out of bounds
 	if((graph == nullptr) || (s_vertex < 1) || (s_vertex > graph->getSize()) || (e_vertex < 1) || (e_vertex > graph->getSize()))
 		return false;
-	if(option != 'Y' && option != 'N')
+	if(option != 'Y' && option != 'N') // Check if the option is valid
         return false;
 
 	return Bellmanford(graph, option, s_vertex, e_vertex);
@@ -278,16 +289,20 @@ bool Manager::mBELLMANFORD(char option, int s_vertex, int e_vertex)
 
 bool Manager::mFLOYD(char option)
 {
-	if(graph == nullptr)
+	if(graph == nullptr) // Check if the graph is null
 		return false;
-	if(option != 'Y' && option != 'N')
+	if(option != 'Y' && option != 'N') // Check if the option is valid
         return false;
 
-	FLOYD(graph, option);
+	return FLOYD(graph, option);
 }
 
 bool Manager::mKwoonWoon(int vertex) {
 	
+	if(graph == nullptr) // Check if the graph is null
+		return false;
+
+	return KWANGWOON(graph, 1);
 }
 
 void Manager::printErrorCode(int n)

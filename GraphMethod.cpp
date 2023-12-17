@@ -14,48 +14,57 @@ using namespace std;
 
 bool BFS(Graph* graph, char option, int vertex)
 {
+    // Open the output file for appending
     ofstream fout;
-    fout.open("log.txt", ios::app); 
-    if(!fout)
+    fout.open("log.txt", ios::app);
+    if (!fout)
         return false;
 
-    int size = graph->getSize(); 
-    bool isVisit[size + 1] = {0, }; 
+    // Get the size of the graph and initialize the visit array
+    int size = graph->getSize();
+    bool isVisit[size + 1] = {false};
 
+    // Write BFS header information to the log file
     fout << "======== BFS ========" << endl;
-	if (option == 'Y') 
-		fout << "Directed Graph BFS result" << endl;
-	else
-		fout << "Unirected Graph BFS result" << endl;
-	fout << "startvertex: " << vertex << endl;
+    if (option == 'Y') 
+        fout << "Directed Graph BFS result" << endl;
+    else
+        fout << "Unirected Graph BFS result" << endl;
+    fout << "startvertex: " << vertex << endl;
 
+    // Initialize the BFS queue and mark the starting vertex as visited
     queue<int> bfs;
     bfs.push(vertex);
     isVisit[vertex] = true;
     fout << vertex;
 
-    while(bfs.empty() == false) 
+    // Perform BFS traversal
+    while (bfs.empty() == false) 
     {
         int num = bfs.front();
         bfs.pop();
-        if(num != vertex)
-            fout <<  " -> " << num;
+        if (num != vertex)
+            fout << " -> " << num;
 
+        // Get adjacent edges based on the graph type
         map<int, int>* m = new map<int, int>;
-        if(option == 'Y')
+        if (option == 'Y')
             graph->getAdjacentEdgesDirect(num, m);
         else 
             graph->getAdjacentEdges(num, m);
         
+        // Visit adjacent vertices and enqueue if not visited
         map<int, int>::iterator it;
-        for(it = m->begin(); it != m->end(); it++)  {
+        for (it = m->begin(); it != m->end(); it++)  {
             int newNum = it->first;
-            if(isVisit[newNum] == false) {
+            if (isVisit[newNum] == false) {
                 bfs.push(newNum);
                 isVisit[newNum] = true;
             }
         }
     }
+
+    // Write footer information to the log file
     fout << endl;
     fout << "=====================" << endl << endl;
     fout.close();
@@ -64,44 +73,51 @@ bool BFS(Graph* graph, char option, int vertex)
 
 bool DFS(Graph* graph, char option, int vertex)
 {
+    // Open the output file for appending
     ofstream fout;
-    fout.open("log.txt", ios::app); //set output textfile
-    if(!fout)
+    fout.open("log.txt", ios::app);
+    if (!fout)
         return false;
-    
+
+    // Write DFS header information to the log file
     fout << "======== DFS ========" << endl;
-	if (option == 'Y') 
-		fout << "Directed Graph DFS result" << endl;
-	else
-		fout << "Unirected Graph DFS result" << endl;
-	fout << "startvertex: " << vertex << endl;
-   
+    if (option == 'Y') 
+        fout << "Directed Graph DFS result" << endl;
+    else
+        fout << "Unirected Graph DFS result" << endl;
+    fout << "startvertex: " << vertex << endl;
+
+    // Get the size of the graph and initialize the visit array
     int size = graph->getSize();
-    bool isVisit[size + 1] = {0, };
+    bool isVisit[size + 1] = {false};
     int start = vertex;
     fout << start;
 
+    // Initialize the DFS stack and mark the starting vertex as visited
     stack<int> dfs;
     dfs.push(start);
     isVisit[start] = true;
 
-    while(dfs.empty() == false)
+    // Perform DFS traversal
+    while (dfs.empty() == false)
     {
         int num = dfs.top();
         dfs.pop();
 
+        // Get adjacent edges based on the graph type
         map<int, int>* m = new map<int, int>;
-        if(option == 'Y')
+        if (option == 'Y')
             graph->getAdjacentEdgesDirect(num, m);
         else 
             graph->getAdjacentEdges(num, m);
-        map<int, int>::iterator it;
 
-        for(it = m->begin(); it != m->end(); it++) {
+        // Visit adjacent vertices and push to stack if not visited
+        map<int, int>::iterator it;
+        for (it = m->begin(); it != m->end(); it++) {
             int newNum = it->first;
 
-            if(isVisit[newNum] == false) {
-                fout <<  " -> " << newNum;
+            if (isVisit[newNum] == false) {
+                fout << " -> " << newNum;
                 isVisit[newNum] = true;
 
                 dfs.push(num);
@@ -110,6 +126,8 @@ bool DFS(Graph* graph, char option, int vertex)
             }
         }
     }
+
+    // Write footer information to the log file
     fout << endl;
     fout << "=====================" << endl << endl;
     fout.close();
@@ -118,6 +136,7 @@ bool DFS(Graph* graph, char option, int vertex)
 
 bool Kruskal(Graph* graph)
 {
+    // Open the output file for appending
     ofstream fout;
     fout.open("log.txt", ios::app); 
     if(!fout)
@@ -166,8 +185,9 @@ bool Kruskal(Graph* graph)
         printEdge.push_back(make_pair(it2->second.second, make_pair(it2->second.first, it2->first)));
         printEdge.push_back(make_pair(it2->second.first, make_pair(it2->second.second, it2->first)));
     }
-    
     quicksort(printEdge, 0, printEdge.size() - 1, 6);
+
+    // Write KRUSKAL header information to the log file
     fout << "====== Kruskal ======" << endl;
     for(int i = 1; i <= size; i++) {
         fout << "[" << i << "]\t";
@@ -177,6 +197,8 @@ bool Kruskal(Graph* graph)
         }
         fout << endl;
     }
+
+    // Write footer information to the log file
     fout << "cost: " << cost << endl;
     fout << "=====================" << endl << endl;
     fout.close();
@@ -185,11 +207,13 @@ bool Kruskal(Graph* graph)
 
 bool Dijkstra(Graph* graph, char option, int vertex)
 {
+    // Open the output file for appending
     ofstream fout;
     fout.open("log.txt", ios::app);
     if(!fout)
         return false;
 
+    // Get the size of the graph and initialize the visit array
     int size = graph->getSize();
     vector<int> distance(size + 1, INT_MAX);
     vector<bool> visited(size + 1, false);
@@ -231,6 +255,7 @@ bool Dijkstra(Graph* graph, char option, int vertex)
         visited[curVertex] = true;
     }
 
+    // Write Dijkstra header information to the log file
     fout << "====== Dijkstra ======" << endl;
     if (option == 'Y') 
 		fout << "Directed Graph Dijkstra result" << endl;
@@ -265,6 +290,8 @@ bool Dijkstra(Graph* graph, char option, int vertex)
             }
         }
     }
+
+    // Write footer information to the log file
     fout << "=====================" << endl << endl;
     fout.close();
     return true;
@@ -272,11 +299,13 @@ bool Dijkstra(Graph* graph, char option, int vertex)
 
 bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex) 
 {
+    // Open the output file for appending
     ofstream fout;
     fout.open("log.txt", ios::app);
     if(!fout)
         return false;
 
+    // Get the size of the graph and initialize the visit array
     int size = graph->getSize();
     vector<int> dist(size + 1, INT_MAX);
     vector<int> path(size + 1, -1);
@@ -302,24 +331,8 @@ bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex)
             }
         }
     }
-    // for (int i = 1; i <= size - 1; ++i) {
-
-    //     map<int, int>* m = new map<int, int>;
-    //     if(option == 'Y')
-    //         graph->getAdjacentEdgesDirect(i, m);
-    //     else 
-    //         graph->getAdjacentEdges(i, m);
-        
-    //     for(auto it = m->begin(); it!=m->end(); it++) {
-
-    //         int from = i;
-    //         int to = it->first;
-    //         int weight = it->second;
-
-    //         if (dist[from] != INT_MAX && dist[to] > dist[from] + weight)
-    //             return false;
-    //     }
-    // }
+   
+    // Write Bellman-Ford header information to the log file
     fout << "====== Bellman-Ford ======" << endl;
     if (option == 'Y')
         fout << "Directed Graph Bellman-Ford result" << endl;
@@ -344,6 +357,8 @@ bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex)
         }
         fout << endl << "cost: " << dist[e_vertex] << endl;
     }
+
+    // Write footer information to the log file
     fout << "=====================" << endl << endl;
     fout.close();
     return true;     
@@ -351,6 +366,7 @@ bool Bellmanford(Graph* graph, char option, int s_vertex, int e_vertex)
 
 bool FLOYD(Graph* graph, char option)
 {
+    // Open the output file for appending
     ofstream fout;
     fout.open("log.txt", ios::app);
     if(!fout)
@@ -391,6 +407,7 @@ bool FLOYD(Graph* graph, char option)
             dist[i][i] = 0;
     }
     
+    // Write FLOYD header information to the log file
     fout << "======== FLOYD ========" << endl;
     if (option == 'Y') 
 		fout << "Directed Graph FLOYD result" << endl;
@@ -413,12 +430,15 @@ bool FLOYD(Graph* graph, char option)
         }
 		fout << endl;
 	}
+
+    // Write footer information to the log file
 	fout << "=======================" << endl << endl;
     fout.close();
     return true;
 }
 
 bool KWANGWOON(Graph* graph, int vertex) {
+    // Function implementing KWANGWOON algorithm
 
     ofstream fout;
     fout.open("log.txt", ios::app);
@@ -433,7 +453,7 @@ bool KWANGWOON(Graph* graph, int vertex) {
     fout << vertex;
     
     int num = vertex;
-    isVisit[vertex] = 1;
+    isVisit[vertex] = true;
     while(true) 
     {
         if(num != vertex)
@@ -443,6 +463,7 @@ bool KWANGWOON(Graph* graph, int vertex) {
         graph->getAdjacentEdges(num, m);
 
         if(m->size() % 2 == 0) {
+            // If the number of adjacent edges is even, choose the smallest neighbor
             for(auto it = m->begin(); it != m->end(); it++)  {
                 int newNum = it->first;
                 if(isVisit[newNum] == false) {
@@ -453,6 +474,7 @@ bool KWANGWOON(Graph* graph, int vertex) {
             }
         }
         else {
+            // If the number of adjacent edges is odd, choose the largest neighbor
             for (auto it = m->rbegin(); it != m->rend(); ++it) {
                 int newNum = it->first;
                 if(isVisit[newNum] == false) {
@@ -465,15 +487,15 @@ bool KWANGWOON(Graph* graph, int vertex) {
     }
 
     vector<int> arr(size, 1);
-	vector<int> segment_tree;
-	segment_tree.resize(arr.size() * 4);
-	init(1, 0, arr.size() - 1, arr, segment_tree);  
+    vector<int> segment_tree;
+    segment_tree.resize(arr.size() * 4);
+    init(1, 0, arr.size() - 1, arr, segment_tree);  
 
-	int diff = arr[1];
+    int diff = arr[1];
     arr[1] = 0;
     update(1, 0, arr.size() - 1, 1, diff, arr, segment_tree);
 
-	fout << endl;
+    fout << endl;
     fout << "===========================" << endl << endl;
     fout.close();
     return true;
@@ -481,11 +503,14 @@ bool KWANGWOON(Graph* graph, int vertex) {
 
 void quicksort(vector<pair<int, pair<int, int>>>& arr, int low, int high, int segment_size) {
     
-    if (low < high) {      
+    if (low < high) {
+        // Check if the array size is within the segment size
         if (high - low + 1 <= segment_size) {
+            // If yes, perform insertion sort on the segment
             insertionSort(arr, low, high);
         } 
         else {
+            // Otherwise, choose a pivot, partition the array, and recursively sort the partitions
             int pivot = partition(arr, low, high);
             quicksort(arr, low, pivot - 1, segment_size);
             quicksort(arr, pivot + 1, high, segment_size);
@@ -495,74 +520,83 @@ void quicksort(vector<pair<int, pair<int, int>>>& arr, int low, int high, int se
 
 int partition(vector<pair<int, pair<int, int>>>& arr, int low, int high) {
 
+    // Choose the pivot element
     pair<int, pair<int, int>> pivot = arr[(low + high) / 2];
     int i = low - 1;
     int j = high + 1;
+
+    // Perform the partitioning
     while (true) {
         do {
             ++i;
         } while (arr[i] < pivot);
-
         do {
             --j;
         } while (arr[j] > pivot);
-
         if (i >= j) {
-            return j;
-        }
-        swap(arr[i], arr[j]);
+            return j; // Return the index where partitioning is done
+        } 
+        swap(arr[i], arr[j]); // Swap elements to maintain the order
     }
 }
 
 void insertionSort(vector<pair<int, pair<int, int>>>& arr, int low, int high) {
-    
-    for (int i = low + 1; i <= high; ++i) {    
+
+    for (int i = low + 1; i <= high; ++i) {
         pair<int, pair<int, int>> key = arr[i];
         int j = i - 1;
+
+        // Move elements greater than the key to the right
         while (j >= low && arr[j] > key) {
             arr[j + 1] = arr[j];
             --j;
         }
+        // Insert the key in the correct position
         arr[j + 1] = key;
     }
 }
 
 int findRoot(vector<int>& parent, int i) {
-    
+    // Recursive function to find the root of the set containing element i
     if (parent[i] == -1)
         return i;
     return findRoot(parent, parent[i]);
 }
 
 void Union(vector<int>& parent, vector<int>& rank, int x, int y) {
-    
+
+    // Find the roots of the sets containing x and y
     int xRoot = findRoot(parent, x);
     int yRoot = findRoot(parent, y);
 
+    // Check the ranks to determine the parent of the merged set
     if (rank[xRoot] < rank[yRoot])
         parent[xRoot] = yRoot;
     else if (rank[xRoot] > rank[yRoot])
         parent[yRoot] = xRoot;
     else {
+        // If ranks are equal, choose either root as the parent and increment the rank
         parent[yRoot] = xRoot;
         rank[xRoot]++;
     }
 }
 
 int init(int node, int start, int end, vector<int> &_arr, vector<int> &_seg) {
+    // Initialize the segment tree
 
-	cout << "***" << endl;
     if (start == end) return _seg[node] = _arr[start];
-	int mid = (start + end) / 2;
-	init(node * 2, start, mid, _arr, _seg);
-	init(node * 2 + 1, mid + 1, end, _arr, _seg);
-	_seg[node] = _seg[node * 2] + _seg[node * 2 + 1];
+    int mid = (start + end) / 2;
+    init(node * 2, start, mid, _arr, _seg);
+    init(node * 2 + 1, mid + 1, end, _arr, _seg);
+    _seg[node] = _seg[node * 2] + _seg[node * 2 + 1];
 }
 
 void update(int node, int start, int end, int target, int diff_value, vector<int>& _arr, vector<int>& _seg) {
-    
+    // Update the segment tree by modifying the value at the target index
+
     if (target < start || target > end) return;
     if (start == end) {
+        // If the target is a leaf node, update the array and the segment tree node
         _arr[target] = 0;
         _seg[node] = 0;
         return;
@@ -574,9 +608,10 @@ void update(int node, int start, int end, int target, int diff_value, vector<int
 }
 
 int sum(int node, int start, int end, int left, int right, vector<int>& _arr, vector<int>& _seg) {
-	
+    // Calculate the sum in the given range [left, right]
+
     if (left > end || right < start) return 0;
-	if (left <= start && end <= right) return _seg[node];
-	int mid = (start + end) / 2;
-	return sum(node * 2, start, mid, left, right, _arr, _seg) + sum(node * 2 + 1, mid + 1, end, left, right, _arr, _seg);
+    if (left <= start && end <= right) return _seg[node];
+    int mid = (start + end) / 2;
+    return sum(node * 2, start, mid, left, right, _arr, _seg) + sum(node * 2 + 1, mid + 1, end, left, right, _arr, _seg);
 }
